@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import logo from './lg.png';
 import './App.css';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Checkbox from '@mui/material/Checkbox';
+import {
+  MenuItem,
+  Select,
+  OutlinedInput,
+  Checkbox,
+  InputAdornment,
+  TextField,
+  Autocomplete,
+  FormGroup,
+  FormControlLabel
+} from '@mui/material'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
+import OpenModal from "./openModal";
 
 const inputStyleAutoWidth = { height: '3em', backgroundColor: 'rgba(255,255,255,1)', fontSize: '0.8em' }
 const inputStyleHaveWidth = { height: '3em', backgroundColor: 'rgba(255,255,255,1)', width: '100%', fontSize: '0.8em' }
@@ -23,8 +22,14 @@ const errorOutlineIconStyle = { color: 'red', fontSize: '1em' };
 const stateOptions = ["New South Wales", "Victoria", "Queensland", "Western Australia", "South Australia", "Tasmania"]
 
 const isEmail = (str: string): boolean => {
-  var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+  const reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
   return reg.test(str);
+}
+
+// 0200 – 0299, 0800-0999 and 1000 – 9999 valid
+const isPostcode = (str: string): boolean => {
+  const reg = /^(0[289][0-9]{2})|([1-9][0-9]{3})$/
+  return reg.test(str)
 }
 
 function App() {
@@ -67,8 +72,6 @@ function App() {
   const [descriptionError, setDescriptionError] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
 
-
-
   const changeField = (event: React.ChangeEvent<HTMLInputElement> | any) => {
     let name = event.target.name
     let val = event.target.value
@@ -99,11 +102,25 @@ function App() {
       }
 
       if (name === 'emailOptOut') {
-        setEmailOptOut(!emailOptOut)
+        console.log(event.target.checked)
+        setEmailOptOut(event.target.checked)
       }
 
       if (name === 'streetNo') {
         setStreetNoError('')
+      }
+
+      if (name === 'postcode') {
+        if (!isPostcode(val) && val !== '') {
+          setPostCodeError('Post code is not valid Australian postcode')
+        } else {
+          setPostCodeError('')
+          setPostCodeErrorMsg('')
+        }
+      }
+
+      if (name === 'description') {
+        setDescriptionError('')
       }
     }
 
@@ -140,9 +157,10 @@ function App() {
     })
   }
 
-  const handDialog = () => {
+  const handleDialog = () => {
     setOpenDialog(false)
   }
+
   const resetForm = () => {
     setFormData({
       gender: '',
@@ -164,6 +182,7 @@ function App() {
     setPhoneError('')
     setPhoneErrorMsg('')
   }
+
   const doSave = () => {
     if (!formData.gender) {
       setGenderError('Please select gender!');
@@ -219,7 +238,11 @@ function App() {
     }
 
     if (!formData.postcode) {
-      setStreetNoError('Please input Postcode!');
+      setPostCodeError('Please input Postcode!');
+      return;
+    }
+
+    if (postCodeError) {
       return;
     }
 
@@ -228,15 +251,12 @@ function App() {
       return;
     }
 
-    if (postCodeError) {
-      return;
-    }
-
+    //open modal
     setOpenDialog(true)
   }
 
   return (
-    <div className="myapp">
+    <div className="form-app">
       <header className="header">
         <div className="header-logo"><img src={logo} className="logo" alt="logo" /></div>
         <section className="header-op">
@@ -257,7 +277,7 @@ function App() {
           </div>
         </section>
       </header>
-      <main className="mainform">
+      <main className="main-form">
         <form id="contact-form">
           <section>
             <div>
@@ -430,16 +450,20 @@ function App() {
 
             <div className="form-row">
               <div className="form-half show-flex">
-                <label className="inline">Email Opt Out</label>
-                <Checkbox
-                  name='emailOptOut'
-                  value={formData.emailOptOut}
-                  onChange={changeField}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name='emailOptOut'
+                        value={formData.emailOptOut ? 'yes' : 'no'}
+                        onChange={changeField}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                      />
+                    }
+                    label="Email Opt Out" />
+                </FormGroup>
               </div>
             </div>
-
           </section>
 
           <section>
@@ -477,7 +501,7 @@ function App() {
                 <label>State</label>
                 <div>
                   <Autocomplete
-                    value={formData.state}
+                    // value={formData.state}
                     sx={{ '& .MuiAutocomplete-endAdornment': { top: '0' }, '& .MuiOutlinedInput-root': { width: '100%', height: '3.8em', paddingTop: '0', paddingBottom: '0', lineHeight: '3.8em', fontSize: '0.8em' }, height: '3em', backgroundColor: 'rgba(255,255,255,1)', width: '100%', fontSize: '0.8em' }}
                     onChange={changeStateHandler}
                     options={stateOptions}
@@ -490,10 +514,11 @@ function App() {
                 <div className="form-have-tips">
                   <TextField
                     label=""
+                    name='postcode'
                     helperText={postCodeErrorMsg}
                     sx={{ '& fieldSet': { borderWidth: '1px', borderColor: postCodeError ? 'rgba(255,0,0,0.8) !important' : 'rgba(0, 0, 0, 0.23);' }, display: 'block', '& p': { lineHeight: '1em', color: 'red' }, '& .MuiOutlinedInput-root': { width: '100%', height: '3.8em', fontSize: '0.8em' }, height: '3em', backgroundColor: 'rgba(255,255,255,1)', width: '100%', fontSize: '0.8em' }}
                     value={formData.postcode}
-                    // onChange={changePostcode}
+                    onChange={changeField}
                     placeholder="2000"
                   />
                   {
@@ -523,9 +548,10 @@ function App() {
                 <div>
                   <OutlinedInput
                     multiline
+                    name='description'
                     value={formData.description}
                     rows={4}
-                    // onChange={changeDescription}
+                    onChange={changeField}
                     sx={{ ...inputStyleNoHeight, '& fieldSet': { borderWidth: '1px', borderColor: descriptionError ? 'rgba(255,0,0,0.8) !important' : 'rgba(0, 0, 0, 0.23);' } }}
                     placeholder=""
                   />
@@ -536,133 +562,12 @@ function App() {
         </form>
       </main>
 
-      <Dialog sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: '800px' } }} disableEscapeKeyDown open={openDialog} onClose={handDialog} >
-        <DialogTitle sx={{ display: 'flex' }}>Saved <CheckIcon sx={{ color: 'rgba(24,217,136,1)', marginLeft: '0.8em' }} /></DialogTitle>
-        <DialogContent sx={{ position: 'relative' }}>
-          <div className="dialogCloseIcon">
-            <ClearIcon
-              onClick={handDialog}
-            />
-          </div>
-          <section className="show-text-section">
-            <div>
-              <p>Contact Information</p>
-            </div>
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>First Name</label>
-                <div>
-                  {formData.firstName}
-                </div>
-              </div>
-              <div className="row-text-half">
-                <label>Last Name</label>
-                <div>
-                  {formData.lastName}
-                </div>
-              </div>
-            </div>
+      <OpenModal
+        handleDialog={handleDialog}
+        openDialog={openDialog}
+        formData={formData}
+      />
 
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>Account Name</label>
-                <div>
-                  {formData.accountName}
-                </div>
-              </div>
-              <div className="row-text-half">
-                <label>Company Name</label>
-                <div>
-                  {formData.companyName}
-                </div>
-              </div>
-            </div>
-
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>Phone</label>
-                <div>
-                  {formData.phone}
-                </div>
-              </div>
-              <div className="row-text-half">
-                <label>Fax</label>
-                <div>
-                  {formData.fax}
-                </div>
-              </div>
-            </div>
-
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>Title</label>
-                <div>
-                  {formData.title}
-                </div>
-              </div>
-              <div className="row-text-half">
-                <label>Email</label>
-                <div>
-                  {formData.email}
-                </div>
-              </div>
-            </div>
-
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>Email Opt Out</label>
-                <div>
-                  {formData.emailOptOut}
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="show-text-section">
-            <div>
-              <p>Address Information</p>
-            </div>
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>Street No. & Street</label>
-                <div>
-                  {formData.streetNo}
-                </div>
-              </div>
-              <div className="row-text-half">
-                <label>City</label>
-                <div>
-                  {formData.city}
-                </div>
-              </div>
-            </div>
-            <div className="row-text">
-              <div className="row-text-half">
-                <label>State</label>
-                <div>
-                  {formData.state}
-                </div>
-              </div>
-              <div className="row-text-half">
-                <label>Postcode</label>
-                <div>
-                  {formData.postcode}
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="show-text-section">
-            <div>
-              <p>Description Information</p>
-            </div>
-            <div className="row-text">
-              <div className="row-text-full">
-                <label>Description</label>
-                <div>{formData.description}</div>
-              </div>
-            </div>
-          </section>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

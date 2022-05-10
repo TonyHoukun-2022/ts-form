@@ -1,39 +1,39 @@
-*{
-  margin:0;
+* {
+  margin: 0;
   padding: 0;
 }
 
-.myapp{
+.form-app {
   max-width: 1200px;
-  margin:0 auto;
-  background: rgba(248,248,248,1.0);
+  margin: 0 auto;
+  background: rgba(248, 248, 248, 1);
   padding-bottom: 6em;
 }
 
-.logo{
+.logo {
   height: 40px;
 }
-.header-logo{
+.header-logo {
   text-align: center;
 }
-.header-op{
+.header-op {
   display: flex;
   justify-content: space-between;
-  background-color: rgba(14,31,138,1.0);
+  background-color: rgba(14, 31, 138, 1);
   line-height: 2.5em;
   padding-left: 1.5em;
   padding-right: 1.5em;
 }
-.header-op-btns{
+.header-op-btns {
   display: flex;
 }
-.header-op h3{
+.header-op h3 {
   font-size: 1em;
   font-weight: 500;
-  color:white;
+  color: white;
 }
 
-.btn{
+.btn {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   padding: 0.5em 1em;
@@ -41,130 +41,128 @@
   cursor: pointer;
   border: none;
 }
-.cancel-btn{
-  background-color: rgba(255,255,255,1.0);
-  color:rgba(254,134,25,1.0);
+.cancel-btn {
+  background-color: rgba(255, 255, 255, 1);
+  color: rgba(254, 134, 25, 1);
   margin-right: 1em;
 }
 
-.save-btn{
-  color: rgba(255,255,255,1.0);
-  background-color: rgba(254,123,4,1.0);
+.save-btn {
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(254, 123, 4, 1);
 }
-.mainform{
+.main-form {
   margin-top: 2em;
   padding-left: 1.5em;
-  max-width: 500px
+  max-width: 500px;
 }
-.mainform p{
+.main-form p {
   line-height: 2em;
   font-size: 1em;
   font-weight: 500;
-  color:rgba(254,123,5,1.0);
+  color: rgba(254, 123, 5, 1);
 }
-.mainform label{
+.main-form label {
   display: block;
   line-height: 1.8em;
 }
-.form-row{
+.form-row {
   display: flex;
   justify-content: space-between;
 }
 div .form-row:not(:first-child) {
   margin-top: 1em;
 }
-.form-half{
+.form-half {
   width: 50%;
   padding-right: 0.3em;
 }
-.inline{
+.inline {
   display: inline-block;
 }
-.show-flex{
+.show-flex {
   display: flex;
   align-items: center;
 }
-.mainform section:not(:first-child) {
+.main-form section:not(:first-child) {
   margin-top: 3em;
 }
-.full-show{
+.full-show {
   width: 100%;
 }
-.form-have-tips{
+.form-have-tips {
   position: relative;
 }
-.error-show-div{
+.error-show-div {
   position: absolute;
   right: 0px;
-  top:1.2em;
+  top: 1.2em;
 }
-.form-flex{
+.form-flex {
   display: flex;
 }
 
-
-section.show-text-section:not(:first-child){
+section.show-text-section:not(:first-child) {
   margin-top: 1em;
 }
 .show-text-section p {
   line-height: 2em;
   font-size: 1.2em;
   font-weight: 500;
-  color:rgba(254,123,5,1.0);
+  color: rgba(254, 123, 5, 1);
 }
 
-.show-text-section label{
-  color:rgba(136,136,136,1)
+.show-text-section label {
+  color: rgba(136, 136, 136, 1);
 }
 
-.row-text{
+.row-text {
   flex-wrap: wrap;
   width: 100%;
   display: flex;
   line-height: 3em;
 }
-.row-text-half{
+.row-text-half {
   width: 50%;
   min-width: 300px;
   display: flex;
 }
-.row-text-half label{
+.row-text-half label {
   width: 40%;
   text-align: right;
   margin-right: 2em;
 }
-.dialogCloseIcon{
-  top:0.5em;
-  right:0.5em;
+.dialogCloseIcon {
+  top: 0.5em;
+  right: 0.5em;
   position: absolute;
   display: inline-block;
-
 }
-.row-text-full{
+.row-text-full {
   display: flex;
   width: 100%;
 }
-.row-text-full label{
+.row-text-full label {
   width: 20%;
   text-align: right;
   margin-right: 2em;
 }
 @media screen and (max-width: 1200px) {
-    .logo {
-        height: 30px
-    }
-    .header-op{
-      padding-left: 0.8em;
-      padding-right: 0.8em;
-    }
-    .mainform{
-      margin-top: 1em;
-      padding-left: 0.8em;
-    }
-}
-
-@media screen and (max-width: 600px) {
-  .row-text-full label{
-    width: 40%;
+  .logo {
+    height: 30px;
+  }
+  .header-op {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+  }
+  .main-form {
+    margin-top: 1em;
+    padding-left: 0.8em;
   }
 }
+
+/* @media screen and (max-width: 600px) {
+  .row-text-full label {
+    width: 40%;
+  }
+} */

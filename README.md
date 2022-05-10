@@ -1,5 +1,8 @@
 #create react app
-npx create-react-app contact-app --template typescript --save
+npx create-react-app ts-form --template typescript --save
+
+#install all needed packages
+npm install
 
 #install mui ui
 npm install @mui/material @emotion/react @emotion/styled --save
